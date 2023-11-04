@@ -20,8 +20,6 @@ target/
 *.jar
 
 # Ignore Spring Boot specific files
-application.properties
-application.yml
 
 # Ignore system-specific files and directories
 .DS_Store
