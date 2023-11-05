@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 		String message = exception.getMessage();
 		ApiResponse apiResponse = new ApiResponse(message, false);
 
-		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
 
 	}
 
