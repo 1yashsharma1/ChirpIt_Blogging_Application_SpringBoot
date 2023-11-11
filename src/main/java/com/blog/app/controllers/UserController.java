@@ -20,7 +20,6 @@ import com.blog.app.services.UserService;
 
 import jakarta.validation.Valid;
 
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -55,17 +54,16 @@ public class UserController {
 
 	@GetMapping("/")
 	public ResponseEntity<List<UserDto>> getAllUsers() {
-		
+
 		return new ResponseEntity<>(this.userService.getAllUsers(), HttpStatus.OK);
 
 	}
-	
+
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getSingleUser(@PathVariable Integer userId) {
-		
+
 		return new ResponseEntity<>(this.userService.getUserById(userId), HttpStatus.OK);
 
 	}
-	
 
 }

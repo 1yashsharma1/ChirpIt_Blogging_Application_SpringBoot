@@ -37,7 +37,7 @@ public class User {
 
 	@Column(length = 200)
 	private String about;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Post> posts = new ArrayList<>();
 
