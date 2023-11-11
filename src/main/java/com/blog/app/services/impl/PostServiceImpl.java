@@ -55,26 +55,42 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostDto updatePost(PostDto postDto, Integer postId) {
-		// TODO Auto-generated method stub
-		return null;
+		Post post=this.postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post", "PostId", postId));
+		post.setContent(postDto.getContent());
+		post.setImageName(postDto.getImageName());
+		post.setTitle(postDto.getTitle());
+		
+		Post updatedPost=this.postRepo.save(post);
+		return this.postToDto(updatedPost);
 	}
 
 	@Override
 	public void deletePost(Integer postId) {
-		// TODO Auto-generated method stub
-
+		
+		Post post=this.postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post", "PostId", postId));
+		this.postRepo.delete(post);
+	
 	}
 
 	@Override
 	public PostDto getPostById(Integer postId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Post post = this.postRepo.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post", "PostId", postId));
+
+		return this.postToDto(post);
 	}
 
 	@Override
 	public List<PostDto> getAllPost() {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<Post> postList = this.postRepo.findAll();
+		List<PostDto> postDtoList = postList.stream()
+				.map(post -> this.postToDto(post))
+				.toList();
+
+
+		return postDtoList;
 	}
 
 	@Override
@@ -83,7 +99,7 @@ public class PostServiceImpl implements PostService {
 		Category category = this.categoryRepo.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "CategoryId", categoryId));
 		List<Post> postList = this.postRepo.findByCategory(category);
-		List<PostDto> postDtoList = postList.stream().map(post -> this.postToDto(post)).collect(Collectors.toList());
+		List<PostDto> postDtoList = postList.stream().map(post -> this.postToDto(post)).toList();
 
 		return postDtoList;
 
@@ -95,7 +111,7 @@ public class PostServiceImpl implements PostService {
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "UserId", userId));
 		List<Post> postList = this.postRepo.findByUser(user);
-		List<PostDto> postDtoList = postList.stream().map(post -> this.postToDto(post)).collect(Collectors.toList());
+		List<PostDto> postDtoList = postList.stream().map(post -> this.postToDto(post)).toList();
 
 		return postDtoList;
 

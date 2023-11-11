@@ -11,10 +11,12 @@ import lombok.Setter;
 @Setter
 public class PostDto {
 
+	private Integer postId;
+
 	private String title;
 
 	private String content;
-	
+
 	private String imageName;
 
 	private Date addedDate;
