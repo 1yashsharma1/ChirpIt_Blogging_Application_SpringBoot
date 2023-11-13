@@ -1,5 +1,7 @@
 package com.blog.app.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +15,7 @@ public interface PostRepo extends JpaRepository<Post, Integer> {
 	Page<Post> findByUser(User user, Pageable page);
 
 	Page<Post> findByCategory(Category category, Pageable page);
+
+	List<Post> findByTitleContaining(String keyword);
 
 }

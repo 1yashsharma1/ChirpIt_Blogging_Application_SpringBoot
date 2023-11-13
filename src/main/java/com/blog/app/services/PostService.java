@@ -21,4 +21,6 @@ public interface PostService {
 
 	PostResponse getPostByUser(Integer userId, Integer pageNumber, Integer pageSize);
 
+	List<PostDto> searchByTitle(String keyword);
+
 }

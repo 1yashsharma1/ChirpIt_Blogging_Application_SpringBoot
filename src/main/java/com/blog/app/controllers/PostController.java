@@ -1,5 +1,7 @@
 package com.blog.app.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blog.app.configs.AppConstants;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.PostDto;
 import com.blog.app.payloads.PostResponse;
@@ -56,10 +59,10 @@ public class PostController {
 
 	@GetMapping("/posts")
 	public ResponseEntity<PostResponse> getAllPost(
-			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-			@RequestParam(value = "sortBy", defaultValue = "postId", required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir) {
 
 		PostResponse allPost = this.postService.getAllPost(pageNumber, pageSize, sortBy, sortDir);
 		return new ResponseEntity<>(allPost, HttpStatus.OK);
@@ -71,6 +74,14 @@ public class PostController {
 
 		PostDto postDto = this.postService.getPostById(postId);
 		return new ResponseEntity<>(postDto, HttpStatus.OK);
+
+	}
+
+	@GetMapping("/posts/search/{keyword}")
+	public ResponseEntity<List<PostDto>> searchPostByTitle(@PathVariable String keyword) {
+
+		List<PostDto> postDtoList = this.postService.searchByTitle(keyword);
+		return new ResponseEntity<>(postDtoList, HttpStatus.OK);
 
 	}
 
