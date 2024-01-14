@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,6 +40,28 @@ public class GlobalExceptionHandler {
 
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
+	}
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ApiResponse> badCredentialsExceptionHandler(
+			BadCredentialsException exception) {
+
+
+		String message = exception.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message, false);
+
+		return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ApiException.class)
+	public ResponseEntity<ApiResponse> handleApiException(
+			ApiException exception) {
+
+
+		String message = exception.getMessage();
+		ApiResponse apiResponse = new ApiResponse(message, false);
+
+		return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 	}
 
 }
