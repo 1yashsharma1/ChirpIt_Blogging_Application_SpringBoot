@@ -1,15 +1,21 @@
 package com.blog.app.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blog.app.configs.AppConstants;
+import com.blog.app.entities.Role;
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
+import com.blog.app.payloads.RoleDto;
 import com.blog.app.payloads.UserDto;
+import com.blog.app.repositories.RoleRepo;
 import com.blog.app.repositories.UserRepo;
 import com.blog.app.services.UserService;
 
@@ -22,10 +28,17 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private RoleRepo roleRepo;
+
 	@Override
 	public UserDto createUser(UserDto userDto) {
 
 		User user = this.dtoToUser(userDto);
+		user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
 		User savedUser = this.userRepo.save(user);
 
 		return this.userToDto(savedUser);
@@ -41,7 +54,16 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(userDto.getEmail());
 		user.setAbout(userDto.getAbout());
 		user.setName(userDto.getName());
-		user.setPassword(userDto.getPassword());
+		user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+		List<RoleDto> rolesDto = userDto.getRoles();
+		List<Role> roles = new ArrayList<>();
+		rolesDto.stream().forEach(role -> {
+			Role newRole = new Role();
+			newRole.setId(role.getId());
+			newRole.setName(role.getName());
+			roles.add(newRole);
+		});
+		user.setRoles(roles);
 
 		User savedUser = this.userRepo.save(user);
 
@@ -97,6 +119,19 @@ public class UserServiceImpl implements UserService {
 
 		return userDto;
 
+	}
+
+	@Override
+	public UserDto registerNewUser(UserDto userDto) {
+
+		User user = this.dtoToUser(userDto);
+		// encoded password
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+		user.getRoles().add(role);
+		User newUser = this.userRepo.save(user);
+		UserDto newUserDto = this.userToDto(newUser);
+		return newUserDto;
 	}
 
 }
