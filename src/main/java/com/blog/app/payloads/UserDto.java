@@ -1,5 +1,10 @@
 package com.blog.app.payloads;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.blog.app.entities.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -39,5 +44,7 @@ public class UserDto {
 	@NotEmpty
 	@Size(min = 4, max = 100, message = "About should be between 4 to 100 characters long")
 	private String about;
+	
+	private List<RoleDto> roles=new ArrayList<>();
 
 }
