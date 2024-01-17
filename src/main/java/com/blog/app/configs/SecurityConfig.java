@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.blog.app.security.CustomUserDetailService;
 import com.blog.app.security.JWTAuthFilter;
@@ -23,6 +24,7 @@ import com.blog.app.security.JWTAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
@@ -35,13 +37,15 @@ public class SecurityConfig {
 	@Autowired
 	private JWTAuthFilter jwtAuthenticationFilter;
 
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/**").permitAll()
-				.requestMatchers(HttpMethod.GET).permitAll()
-		        .anyRequest().authenticated()).exceptionHandling()
-				.authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.csrf().disable()
+				.authorizeHttpRequests(
+						auth -> auth.requestMatchers("/api/v1/auth/**").permitAll().requestMatchers(AppConstants.PUBLIC_URLS)
+								.permitAll().requestMatchers(HttpMethod.GET).permitAll().anyRequest().authenticated())
+				.exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
