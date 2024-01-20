@@ -28,8 +28,7 @@ jobs:
 
     - name: Create CodeQL Directory
       run: |
-        mkdir -p codeql-results  # Create the CodeQL directory
-        echo "CodeQL directory created."
+        mkdir -p ${{ github.workspace }}/codeql-results
       working-directory: ${{ github.workspace }}
 
     - name: Initialize CodeQL
