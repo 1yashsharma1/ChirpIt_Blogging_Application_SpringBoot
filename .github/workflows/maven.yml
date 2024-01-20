@@ -26,12 +26,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Create CodeQL Directory
+      run: |
+        mkdir codeql-results  # Create the CodeQL directory
+        echo "CodeQL directory created."
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: java
 
-    - name: Autobuild
+    - name: Autobuild Code before Analysis
       uses: github/codeql-action/autobuild@v3
 
     - name: Run CodeQL analysis
@@ -53,6 +58,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        
     - name: Build with Maven
       run: mvn -B -DskipTests=true package --file pom.xml
 
@@ -74,18 +80,25 @@ jobs:
       with:
         name: Package
         path: staging
+    
+    - name: Determine Release Version
+      id: determine_version
+      run: |
+        commit_count=$(git rev-list --count HEAD)
+        echo "RELEASE_VERSION=v${commit_count}" >> $GITHUB_ENV
+        echo "Release version is v${commit_count}"
 
-    - name: Deploy Java Application
+    - name: Create Release Artifact
       run: |
         # Placeholder example: Deploying to GitHub Releases
         # Create a release
-        gh release create v1.0.0 target/*.jar -n "Release v1.0.0"
+        gh release create v1.0.0 target/*.jar -n "Release v${commit_count}"
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Upload CodeQL results
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: ./codeql-results/codeql.sarif
+        sarif_file: ./codeql-results/codeql-results.sarif
 
   
