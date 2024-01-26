@@ -87,6 +87,6 @@ jobs:
       run: |
         # Placeholder example: Deploying to GitHub Releases
         # Create a release
-        gh release create v${commit_count} target/*.jar -n "Release v${commit_count}"
+        gh release create "v${commit_count}" target/*.jar -n "Release v${commit_count}"
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
