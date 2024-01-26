@@ -89,6 +89,9 @@ jobs:
         #!/bin/bash
         # Placeholder example: Deploying to GitHub Releases
         # Create a release
-        gh release create "${GITHUB_REF#refs/tags/}" --generate-notes target/*.jar
+        commit_count=$(git rev-list --count HEAD)
+        current_datetime=$(date +'%Y%m%d%H%M%S')
+        new_version="v1.${commit_count}-${current_datetime}"
+        gh release create "${new_version}" --generate-notes target/*.jar -n "Release ${new_version}"
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
