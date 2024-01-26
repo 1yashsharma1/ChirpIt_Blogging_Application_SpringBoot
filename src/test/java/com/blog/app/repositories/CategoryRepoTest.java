@@ -187,6 +187,7 @@ class CategoryRepoTest {
 		assertEquals(2, categoryList.size());
 		assertEquals("sample test title", categoryList.get(0).getCategoryTitle());
 		assertEquals("sample test title1", categoryList.get(1).getCategoryTitle());
+		System.out.println("just test");
 
 	}
 
