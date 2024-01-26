@@ -42,7 +42,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 		String username = null;
 		String token = null;
 
-		if (request != null &&requestToken!=null && requestToken.startsWith("Bearer")) {
+		if (request != null && requestToken != null && requestToken.startsWith("Bearer")) {
 
 			token = requestToken.substring(7);
 

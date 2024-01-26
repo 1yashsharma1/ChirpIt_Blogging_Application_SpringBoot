@@ -41,22 +41,18 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
 	}
-	
-	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<ApiResponse> badCredentialsExceptionHandler(
-			BadCredentialsException exception) {
 
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ApiResponse> badCredentialsExceptionHandler(BadCredentialsException exception) {
 
 		String message = exception.getMessage();
 		ApiResponse apiResponse = new ApiResponse(message, false);
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
 	}
-	
-	@ExceptionHandler(ApiException.class)
-	public ResponseEntity<ApiResponse> handleApiException(
-			ApiException exception) {
 
+	@ExceptionHandler(ApiException.class)
+	public ResponseEntity<ApiResponse> handleApiException(ApiException exception) {
 
 		String message = exception.getMessage();
 		ApiResponse apiResponse = new ApiResponse(message, false);
