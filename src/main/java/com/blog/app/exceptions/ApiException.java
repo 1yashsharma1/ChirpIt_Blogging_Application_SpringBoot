@@ -11,7 +11,5 @@ public class ApiException extends RuntimeException {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 }

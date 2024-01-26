@@ -1,0 +1,97 @@
+
+name: Blogging Application Code Review, Build and Publish Job
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  codeql-analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['java']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: java
+
+    - name: Autobuild Code before Analysis
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        languages: java
+        working-directory: ${{ github.workspace }}
+  
+  build:
+
+    runs-on: ubuntu-latest
+    needs: codeql-analyze
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+  publish-job:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - run: mvn --batch-mode --update-snapshots verify
+    - run: mkdir staging && cp target/*.jar staging
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: staging
+    
+    - name: Determine Release Version
+      id: determine_version
+      run: |
+        #!/bin/bash
+        commit_count=$(git rev-list --count HEAD)
+        echo "RELEASE_VERSION=v${commit_count}" >> $GITHUB_ENV
+        echo "Release version is v${commit_count}"
+
+    - name: Create Release Artifact
+      run: |
+        #!/bin/bash
+        # Placeholder example: Deploying to GitHub Releases
+        # Create a release
+        commit_count=$(git rev-list --count HEAD)
+        current_datetime=$(date +'%Y%m%d%H%M%S')
+        new_version="v1.${commit_count}-${current_datetime}"
+        gh release create "${new_version}" --generate-notes target/*.jar -n "Release ${new_version}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

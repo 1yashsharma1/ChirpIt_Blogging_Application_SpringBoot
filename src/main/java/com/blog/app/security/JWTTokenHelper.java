@@ -18,18 +18,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-
 @Component
 public class JWTTokenHelper {
 
 	public static final long JWT_TOKEN_VALIDITY = AppConstants.JWT_TOKEN_VALIDITY;
-	 private String secret = "jwtTokenKey";
+	private String secret = "jwtTokenKey";
 
-	    private Key getSignKey() {
-	        byte[] keyBytes = Arrays.copyOf(secret.getBytes(), 32); // Ensure at least 256 bits
-	        SecretKey secretKey = new javax.crypto.spec.SecretKeySpec(keyBytes, "HmacSHA256");
-	        return secretKey;
-	    }
+	private Key getSignKey() {
+		byte[] keyBytes = Arrays.copyOf(secret.getBytes(), 32); // Ensure at least 256 bits
+		SecretKey secretKey = new javax.crypto.spec.SecretKeySpec(keyBytes, "HmacSHA256");
+		return secretKey;
+	}
 
 	public String getUsernameFromToken(String token) {
 		return getClaimFromToken(token, Claims::getSubject);
