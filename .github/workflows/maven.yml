@@ -79,12 +79,14 @@ jobs:
     - name: Determine Release Version
       id: determine_version
       run: |
+        #!/bin/bash
         commit_count=$(git rev-list --count HEAD)
         echo "RELEASE_VERSION=v${commit_count}" >> $GITHUB_ENV
         echo "Release version is v${commit_count}"
 
     - name: Create Release Artifact
       run: |
+        #!/bin/bash
         # Placeholder example: Deploying to GitHub Releases
         # Create a release
         gh release create "v${commit_count}" target/*.jar -n "Release v${commit_count}"
